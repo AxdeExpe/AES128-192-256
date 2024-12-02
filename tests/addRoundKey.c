@@ -1,0 +1,42 @@
+#include "../src/aes.h"
+#include <stdio.h>
+
+int main()
+{
+    u_int8_t round_key[16] = {
+        0x12, 0x34, 0x56, 0x78,
+        0x9a, 0xbc, 0xde, 0xf0,
+        0x12, 0x34, 0x56, 0x78,
+        0x9a, 0xbc, 0xde, 0xf0
+    };
+    u_int8_t state[16] = {
+        0x00, 0x00, 0x01, 0x01,
+        0x03, 0x03, 0x07, 0x07,
+        0x0f, 0x0f, 0x1f, 0x1f,
+        0x3f, 0x3f, 0x7f, 0x7f
+    };
+    u_int8_t desired_result[16] = {
+        0x12, 0x34, 0x57, 0x79,
+        0x99, 0xbf, 0xd9, 0xf7, // 0x99 ...
+        0x1d, 0x3b, 0x49, 0x67,
+        0xa5, 0x83, 0xa1, 0x8f
+    };
+
+    addRoundKey((u_int8_t*)state, round_key, sizeof(state));
+
+    for(int i = 0; i < sizeof(state); i++)
+    {
+        if (state[i] != desired_result[i])
+        {
+            printf("Error at index %d\n", i);
+            printf("Expected: %x\n", desired_result[i]);
+            printf("Got: %x\n", state[i]);
+
+            return 1;
+        }
+    }
+
+    printf("All tests passed!\n");
+
+    return 0;
+}
